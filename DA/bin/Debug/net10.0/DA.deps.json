@@ -1,0 +1,58 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "DA/1.0.0": {
+        "dependencies": {
+          "Abstracciones": "1.0.0",
+          "Scalar.AspNetCore": "2.18.0"
+        },
+        "runtime": {
+          "DA.dll": {}
+        }
+      },
+      "Scalar.AspNetCore/2.18.0": {
+        "runtime": {
+          "lib/net10.0/Scalar.AspNetCore.dll": {
+            "assemblyVersion": "2.18.0.0",
+            "fileVersion": "2.18.0.0"
+          }
+        }
+      },
+      "Abstracciones/1.0.0": {
+        "dependencies": {
+          "Scalar.AspNetCore": "2.18.0"
+        },
+        "runtime": {
+          "Abstracciones.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "DA/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Scalar.AspNetCore/2.18.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-wwI3khcYNM7oL6axr4a41G29fJYOS3ckusgYZ4NiIccL8Amh2LOeu4HSK1SrQWiMJNrgoFqyWfDkOkunQCiRDw==",
+      "path": "scalar.aspnetcore/2.18.0",
+      "hashPath": "scalar.aspnetcore.2.18.0.nupkg.sha512"
+    },
+    "Abstracciones/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

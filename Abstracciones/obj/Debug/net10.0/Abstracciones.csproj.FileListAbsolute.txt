@@ -1,0 +1,12 @@
+C:\Users\kersy\source\repos\SistemSoporte\Abstracciones\bin\Debug\net10.0\Abstracciones.deps.json
+C:\Users\kersy\source\repos\SistemSoporte\Abstracciones\bin\Debug\net10.0\Abstracciones.dll
+C:\Users\kersy\source\repos\SistemSoporte\Abstracciones\bin\Debug\net10.0\Abstracciones.pdb
+C:\Users\kersy\source\repos\SistemSoporte\Abstracciones\obj\Debug\net10.0\Abstracciones.csproj.AssemblyReference.cache
+C:\Users\kersy\source\repos\SistemSoporte\Abstracciones\obj\Debug\net10.0\Abstracciones.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\kersy\source\repos\SistemSoporte\Abstracciones\obj\Debug\net10.0\Abstracciones.AssemblyInfoInputs.cache
+C:\Users\kersy\source\repos\SistemSoporte\Abstracciones\obj\Debug\net10.0\Abstracciones.AssemblyInfo.cs
+C:\Users\kersy\source\repos\SistemSoporte\Abstracciones\obj\Debug\net10.0\Abstracciones.csproj.CoreCompileInputs.cache
+C:\Users\kersy\source\repos\SistemSoporte\Abstracciones\obj\Debug\net10.0\Abstracciones.dll
+C:\Users\kersy\source\repos\SistemSoporte\Abstracciones\obj\Debug\net10.0\refint\Abstracciones.dll
+C:\Users\kersy\source\repos\SistemSoporte\Abstracciones\obj\Debug\net10.0\Abstracciones.pdb
+C:\Users\kersy\source\repos\SistemSoporte\Abstracciones\obj\Debug\net10.0\ref\Abstracciones.dll

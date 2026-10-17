@@ -1,0 +1,15 @@
+C:\Users\kersy\source\repos\SistemSoporte\DA\bin\Debug\net10.0\DA.deps.json
+C:\Users\kersy\source\repos\SistemSoporte\DA\bin\Debug\net10.0\DA.dll
+C:\Users\kersy\source\repos\SistemSoporte\DA\bin\Debug\net10.0\DA.pdb
+C:\Users\kersy\source\repos\SistemSoporte\DA\bin\Debug\net10.0\Abstracciones.dll
+C:\Users\kersy\source\repos\SistemSoporte\DA\bin\Debug\net10.0\Abstracciones.pdb
+C:\Users\kersy\source\repos\SistemSoporte\DA\obj\Debug\net10.0\DA.csproj.AssemblyReference.cache
+C:\Users\kersy\source\repos\SistemSoporte\DA\obj\Debug\net10.0\DA.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\kersy\source\repos\SistemSoporte\DA\obj\Debug\net10.0\DA.AssemblyInfoInputs.cache
+C:\Users\kersy\source\repos\SistemSoporte\DA\obj\Debug\net10.0\DA.AssemblyInfo.cs
+C:\Users\kersy\source\repos\SistemSoporte\DA\obj\Debug\net10.0\DA.csproj.CoreCompileInputs.cache
+C:\Users\kersy\source\repos\SistemSoporte\DA\obj\Debug\net10.0\DA.csproj.Up2Date
+C:\Users\kersy\source\repos\SistemSoporte\DA\obj\Debug\net10.0\DA.dll
+C:\Users\kersy\source\repos\SistemSoporte\DA\obj\Debug\net10.0\refint\DA.dll
+C:\Users\kersy\source\repos\SistemSoporte\DA\obj\Debug\net10.0\DA.pdb
+C:\Users\kersy\source\repos\SistemSoporte\DA\obj\Debug\net10.0\ref\DA.dll

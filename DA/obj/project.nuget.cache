@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "pt+a7wEhMA0=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\kersy\\source\\repos\\SistemSoporte\\DA\\DA.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\kersy\\.nuget\\packages\\scalar.aspnetcore\\2.18.0\\scalar.aspnetcore.2.18.0.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,15 @@
+C:\Users\kersy\source\repos\SistemSoporte\Flujo\bin\Debug\net10.0\Flujo.deps.json
+C:\Users\kersy\source\repos\SistemSoporte\Flujo\bin\Debug\net10.0\Flujo.dll
+C:\Users\kersy\source\repos\SistemSoporte\Flujo\bin\Debug\net10.0\Flujo.pdb
+C:\Users\kersy\source\repos\SistemSoporte\Flujo\bin\Debug\net10.0\Abstracciones.dll
+C:\Users\kersy\source\repos\SistemSoporte\Flujo\bin\Debug\net10.0\Abstracciones.pdb
+C:\Users\kersy\source\repos\SistemSoporte\Flujo\obj\Debug\net10.0\Flujo.csproj.AssemblyReference.cache
+C:\Users\kersy\source\repos\SistemSoporte\Flujo\obj\Debug\net10.0\Flujo.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\kersy\source\repos\SistemSoporte\Flujo\obj\Debug\net10.0\Flujo.AssemblyInfoInputs.cache
+C:\Users\kersy\source\repos\SistemSoporte\Flujo\obj\Debug\net10.0\Flujo.AssemblyInfo.cs
+C:\Users\kersy\source\repos\SistemSoporte\Flujo\obj\Debug\net10.0\Flujo.csproj.CoreCompileInputs.cache
+C:\Users\kersy\source\repos\SistemSoporte\Flujo\obj\Debug\net10.0\Flujo.csproj.Up2Date
+C:\Users\kersy\source\repos\SistemSoporte\Flujo\obj\Debug\net10.0\Flujo.dll
+C:\Users\kersy\source\repos\SistemSoporte\Flujo\obj\Debug\net10.0\refint\Flujo.dll
+C:\Users\kersy\source\repos\SistemSoporte\Flujo\obj\Debug\net10.0\Flujo.pdb
+C:\Users\kersy\source\repos\SistemSoporte\Flujo\obj\Debug\net10.0\ref\Flujo.dll
