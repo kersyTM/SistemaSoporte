@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Tickets - Mesa de Ayuda</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            margin: 2rem;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: .4rem .6rem;
+            text-align: left;
+        }
+
+        th {
+            background: #f4f4f4;
+        }
+
+        .bar {
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .pager {
+            margin-top: 1rem;
+            display: flex;
+            gap: .5rem;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tickets</h1>
+
+    <div class="bar">
+        <label>
+            Estado:
+            <select id="estado">
+                <option value="">(todos)</option>
+                <option>Abierto</option>
+                <option>EnProceso</option>
+                <option>Resuelto</option>
+                <option>Cerrado</option>
+            </select>
+        </label>
+        <label>
+            Prioridad:
+            <select id="prioridad">
+                <option value="">(todas)</option>
+                <option>Baja</option>
+                <option>Media</option>
+                <option>Alta</option>
+                <option>Critica</option>
+            </select>
+        </label>
+        <label>Buscar: <input id="q" type="text" placeholder="título o descripción"></label>
+        <button id="aplicar">Aplicar</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Código</th>
+                <th>Título</th>
+                <th>Prioridad</th>
+                <th>Estado</th>
+                <th>Cliente</th>
+                <th>Agente</th>
+                <th>Creado</th>
+            </tr>
+        </thead>
+        <tbody id="filas"></tbody>
+    </table>
+
+    <div class="pager">
+        <button id="prev">« Anterior</button>
+        <span id="info"></span>
+        <button id="next">Siguiente »</button>
+    </div>
+
+    <script>
+const estado = document.getElementById('estado');
+const prioridad = document.getElementById('prioridad');
+const q = document.getElementById('q');
+const filas = document.getElementById('filas');
+const info = document.getElementById('info');
+let pagina = 1, totalPaginas = 1;
+
+async function cargar() {
+  const params = new URLSearchParams({ pagina, tamano: 10, orden: '-fecha' });
+  if (estado.value) params.set('estado', estado.value);
+  if (prioridad.value) params.set('prioridad', prioridad.value);
+  if (q.value.trim()) params.set('q', q.value.trim());
+
+  const res = await fetch('/api/tickets?' + params);
+  if (!res.ok) { alert('Error al cargar: ' + res.status); return; }
+
+  const total = +res.headers.get('X-Total-Count') || 0;
+  const pageSize = +res.headers.get('X-Page-Size') || 10;
+  const page = +res.headers.get('X-Page') || 1;
+  totalPaginas = Math.max(1, Math.ceil(total / pageSize));
+  pagina = page;
+
+  const data = await res.json();
+  filas.innerHTML = data.items.map(t => `
+    <tr>
+      <td>${t.id}</td><td>${t.codigo}</td><td>${t.titulo}</td>
+      <td>${t.prioridad}</td><td>${t.estado}</td>
+      <td>${t.clienteId}</td><td>${t.agenteId ?? '—'}</td>
+      <td>${new Date(t.fechaCreacion).toLocaleString()}</td>
+    </tr>`).join('');
+
+  info.textContent = `Página ${pagina} de ${totalPaginas} — ${total} tickets`;
+  document.getElementById('prev').disabled = pagina <= 1;
+  document.getElementById('next').disabled = pagina >= totalPaginas;
+}
+
+document.getElementById('aplicar').onclick = () => { pagina = 1; cargar(); };
+document.getElementById('prev').onclick = () => { if (pagina > 1) { pagina--; cargar(); } };
+document.getElementById('next').onclick = () => { if (pagina < totalPaginas) { pagina++; cargar(); } };
+
+cargar();
+    </script>
+</body>
+</html>

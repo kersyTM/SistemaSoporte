@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Abstracciones/Abstracciones.csproj" Id="7e325ba6-f45e-4ae3-80b8-097db62857b9" />
+  <Project Path="DA/DA.csproj" Id="d72d47d1-1133-4e6d-94a9-1939346d71c2" />
+  <Project Path="Flujo/Flujo.csproj" Id="e359b678-a7e2-4099-a6ce-e81836704715" />
+  <Project Path="SistemSoporte/SistemSoporte.csproj" />
+</Solution>

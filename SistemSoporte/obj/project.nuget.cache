@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "qYrtKjL/xMs=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\kersy\\source\\repos\\SistemSoporte\\SistemSoporte\\SistemSoporte.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\kersy\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.12\\microsoft.aspnetcore.openapi.10.0.12.nupkg.sha512",
+    "C:\\Users\\kersy\\.nuget\\packages\\microsoft.openapi\\2.12.0\\microsoft.openapi.2.12.0.nupkg.sha512",
+    "C:\\Users\\kersy\\.nuget\\packages\\scalar.aspnetcore\\2.18.0\\scalar.aspnetcore.2.18.0.nupkg.sha512"
+  ],
+  "logs": []
+}
