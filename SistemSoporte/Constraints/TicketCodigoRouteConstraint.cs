@@ -4,7 +4,8 @@ namespace API.Constraints;
 
 public class TicketCodigoRouteConstraint : IRouteConstraint
 {
-    private static readonly Regex Patron = new(@"^TK-\d{4}-\d{4}$",
+    // ⚠️ VARIANTE V=2: SP-AA-NNNN
+    private static readonly Regex Patron = new(@"^SP-\d{2}-\d{3}$",
         RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
     public bool Match(HttpContext? httpContext, IRouter? route, string routeKey,
