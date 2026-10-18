@@ -7,9 +7,10 @@ namespace Flujo;
 
 public class TicketFlujo : ITicketFlujo
 {
-    
-    private const int TamanoMaximoPagina = 20;
+    private const int TamanoMaximoPagina = 30;
     private const int TamanoPaginaDefecto = 10;
+
+    private const int MaxTicketsActivosPorCliente = 3;
 
     private readonly ITicketDA _ticketDA;
     private readonly IClienteDA _clienteDA;
@@ -39,7 +40,6 @@ public class TicketFlujo : ITicketFlujo
             return Result<ResultadoPaginado<TicketResponse>>.Validacion("Uno o más parámetros son inválidos.", errores);
 
         IEnumerable<Ticket> q = _ticketDA.ObtenerTodos();
-
         if (f.Estado.HasValue) q = q.Where(t => t.Estado == f.Estado);
         if (f.Prioridad.HasValue) q = q.Where(t => t.Prioridad == f.Prioridad);
         if (f.ClienteId.HasValue) q = q.Where(t => t.ClienteId == f.ClienteId);
@@ -74,7 +74,6 @@ public class TicketFlujo : ITicketFlujo
         });
     }
 
-    // ---------- GET /api/tickets/{id} ----------
     public Result<TicketResponse> Obtener(int id)
     {
         var t = _ticketDA.ObtenerPorId(id);
@@ -83,7 +82,6 @@ public class TicketFlujo : ITicketFlujo
             : Result<TicketResponse>.Ok(Map(t));
     }
 
-    // ---------- GET /api/tickets/codigo/{codigo} ----------
     public Result<TicketResponse> ObtenerPorCodigo(string codigo)
     {
         var t = _ticketDA.ObtenerPorCodigo(codigo);
@@ -99,6 +97,9 @@ public class TicketFlujo : ITicketFlujo
             return Result<TicketResponse>.NoProcesable(
                 $"El cliente {req.ClienteId} no existe.",
                 new Dictionary<string, string[]> { ["clienteId"] = [$"Cliente {req.ClienteId} inexistente."] });
+
+        var conflicto = VerificarLimiteActivos(req.ClienteId, null, EstadoTicket.Abierto);
+        if (conflicto is not null) return conflicto;
 
         var ahora = DateTime.UtcNow;
         var t = new Ticket
@@ -131,25 +132,18 @@ public class TicketFlujo : ITicketFlujo
             return Result<TicketResponse>.Conflicto(
                 $"Transición inválida: {t.Estado} → {nuevoEstado}.");
 
-        var agenteFinal = req.AgenteId ?? t.AgenteId;
-        var prioridadFinal = req.Prioridad ?? t.Prioridad;
-
-        if (nuevoEstado == EstadoTicket.Resuelto
-            && prioridadFinal == PrioridadTicket.Critica
-            && agenteFinal is null)
-            return Result<TicketResponse>.Conflicto(
-                "Un ticket de prioridad Crítica no puede pasar a Resuelto sin tener AgenteId asignado.");
+        var conflicto = VerificarLimiteActivos(t.ClienteId, id, nuevoEstado);
+        if (conflicto is not null) return conflicto;
 
         t.Estado = nuevoEstado;
-        t.AgenteId = agenteFinal;
-        t.Prioridad = prioridadFinal;
+        t.AgenteId = req.AgenteId ?? t.AgenteId;
+        t.Prioridad = req.Prioridad ?? t.Prioridad;
         t.FechaActualizacion = DateTime.UtcNow;
         _ticketDA.Actualizar(t);
 
         return Result<TicketResponse>.Ok(Map(t));
     }
 
-    // ---------- POST /min/tickets/{id}/reabrir ----------
     public Result<TicketResponse> Reabrir(int id)
     {
         var t = _ticketDA.ObtenerPorId(id);
@@ -157,6 +151,8 @@ public class TicketFlujo : ITicketFlujo
         if (t.Estado != EstadoTicket.Resuelto)
             return Result<TicketResponse>.Conflicto("Solo se pueden reabrir tickets en estado Resuelto.");
 
+        var conflicto = VerificarLimiteActivos(t.ClienteId, id, EstadoTicket.EnProceso);
+        if (conflicto is not null) return conflicto;
 
         t.Estado = EstadoTicket.EnProceso;
         t.Reaperturas++;
@@ -165,17 +161,14 @@ public class TicketFlujo : ITicketFlujo
         return Result<TicketResponse>.Ok(Map(t));
     }
 
-    // ---------- GET /min/tickets/resumen ----------
     public ResumenResponse Resumen()
     {
         var todos = _ticketDA.ObtenerTodos();
         return new ResumenResponse
         {
             Total = todos.Count,
-            PorEstado = todos.GroupBy(t => t.Estado)
-                             .ToDictionary(g => g.Key.ToString(), g => g.Count()),
-            PorPrioridad = todos.GroupBy(t => t.Prioridad)
-                                .ToDictionary(g => g.Key.ToString(), g => g.Count())
+            PorEstado = todos.GroupBy(t => t.Estado).ToDictionary(g => g.Key.ToString(), g => g.Count()),
+            PorPrioridad = todos.GroupBy(t => t.Prioridad).ToDictionary(g => g.Key.ToString(), g => g.Count())
         };
     }
 
@@ -185,9 +178,28 @@ public class TicketFlujo : ITicketFlujo
         (EstadoTicket.Abierto, EstadoTicket.EnProceso) => true,
         (EstadoTicket.EnProceso, EstadoTicket.Resuelto) => true,
         (EstadoTicket.Resuelto, EstadoTicket.Cerrado) => true,
-        (EstadoTicket.Resuelto, EstadoTicket.EnProceso) => true,  
+        (EstadoTicket.Resuelto, EstadoTicket.EnProceso) => true,   
         _ => false
     };
+
+   
+    private Result<TicketResponse>? VerificarLimiteActivos(int clienteId, int? excluirTicketId, EstadoTicket nuevoEstado)
+    {
+        if (nuevoEstado != EstadoTicket.Abierto && nuevoEstado != EstadoTicket.EnProceso)
+            return null;
+
+        var activos = _ticketDA.ObtenerTodos()
+            .Count(t => t.ClienteId == clienteId
+                        && t.Id != (excluirTicketId ?? 0)
+                        && (t.Estado == EstadoTicket.Abierto || t.Estado == EstadoTicket.EnProceso));
+
+        if (activos >= MaxTicketsActivosPorCliente)
+            return Result<TicketResponse>.Conflicto(
+                $"El cliente {clienteId} ya tiene {activos} tickets en estado Abierto o EnProceso. " +
+                $"El máximo permitido es {MaxTicketsActivosPorCliente}.");
+
+        return null;
+    }
 
     private static TicketResponse Map(Ticket t) => new()
     {

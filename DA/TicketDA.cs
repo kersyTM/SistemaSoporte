@@ -1,7 +1,6 @@
 ﻿using Abstracciones.Interfaces;
 using Abstracciones.Modelos;
 using Abstracciones.Models;
-using System.Net.Sockets;
 
 namespace DA;
 
@@ -14,10 +13,12 @@ public class TicketDA : ITicketDA
     public TicketDA() => Seed();
 
     public IReadOnlyList<Ticket> ObtenerTodos() { lock (_lock) return _tickets.ToList(); }
-
     public Ticket? ObtenerPorId(int id) { lock (_lock) return _tickets.FirstOrDefault(t => t.Id == id); }
-
-    public Ticket? ObtenerPorCodigo(string codigo) { lock (_lock) return _tickets.FirstOrDefault(t => t.Codigo == codigo); }
+    public Ticket? ObtenerPorCodigo(string codigo)
+    {
+        lock (_lock)
+            return _tickets.FirstOrDefault(t => t.Codigo.Equals(codigo, StringComparison.OrdinalIgnoreCase));
+    }
 
     public Ticket Agregar(Ticket ticket)
     {
@@ -33,24 +34,27 @@ public class TicketDA : ITicketDA
         }
     }
 
-    
+
     public string GenerarCodigo()
     {
         lock (_lock)
         {
-            var anio = DateTime.UtcNow.Year;
-            var prefijo = $"TK-{anio}-";
+            var yy = DateTime.UtcNow.Year % 100;
+            var prefijo = $"SP-{yy:D2}-";
             var max = _tickets
-                .Where(t => t.Codigo.StartsWith(prefijo) && t.Codigo.Length == prefijo.Length + 4)
-                .Select(t => int.TryParse(t.Codigo[^4..], out var n) ? n : 0)
+                .Where(t => t.Codigo.StartsWith(prefijo, StringComparison.OrdinalIgnoreCase)
+                            && t.Codigo.Length == prefijo.Length + 3)
+                .Select(t => int.TryParse(t.Codigo[^3..], out var n) ? n : 0)
                 .DefaultIfEmpty(0).Max();
-            return $"{prefijo}{max + 1:D4}";
+            return $"{prefijo}{max + 1:D3}";
         }
     }
 
     private void Seed()
     {
-        var titulos = new[] {
+        // 26 títulos distintos
+        var titulos = new[]
+        {
             "No puedo iniciar sesión", "Error al exportar reporte", "Correo no llega al destinatario",
             "Impresora sin conexión", "Solicitud de nueva licencia", "Lentitud en el sistema",
             "Pantalla en blanco al abrir módulo", "Error 500 al guardar formulario",
@@ -63,26 +67,47 @@ public class TicketDA : ITicketDA
             "API externa no responde", "Certificado SSL vencido"
         };
 
-        var rand = new Random(20260101);
-        var ahora = DateTime.UtcNow;
 
-        for (int i = 0; i < 26; i++)
+        var estadosPorCliente = new Dictionary<int, EstadoTicket[]>
         {
-            var creado = ahora.AddDays(-rand.Next(0, 60)).AddHours(-rand.Next(0, 24));
-            _tickets.Add(new Ticket
+            [1] = new[] { EstadoTicket.Abierto,   EstadoTicket.EnProceso, EstadoTicket.EnProceso,
+                          EstadoTicket.Resuelto,  EstadoTicket.Resuelto,  EstadoTicket.Cerrado },
+            [2] = new[] { EstadoTicket.Abierto,   EstadoTicket.EnProceso, EstadoTicket.EnProceso,
+                          EstadoTicket.Resuelto,  EstadoTicket.Cerrado },
+            [3] = new[] { EstadoTicket.Abierto,   EstadoTicket.EnProceso, EstadoTicket.EnProceso,
+                          EstadoTicket.Resuelto,  EstadoTicket.Resuelto },
+            [4] = new[] { EstadoTicket.Abierto,   EstadoTicket.EnProceso, EstadoTicket.EnProceso,
+                          EstadoTicket.Cerrado,   EstadoTicket.Cerrado },
+            [5] = new[] { EstadoTicket.Abierto,   EstadoTicket.EnProceso, EstadoTicket.EnProceso,
+                          EstadoTicket.Resuelto,  EstadoTicket.Cerrado }
+        };
+
+        var rand = new Random(20260217);   
+        var ahora = DateTime.UtcNow;
+        var yy = ahora.Year % 100;
+        int i = 0;
+
+        foreach (var kvp in estadosPorCliente)
+        {
+            foreach (var estado in kvp.Value)
             {
-                Id = ++_ultimoId,
-                Codigo = $"TK-{ahora.Year}-{(i + 1):D4}",
-                Titulo = $"{titulos[i % titulos.Length]} #{i + 1}",
-                Descripcion = "Ticket generado automáticamente para pruebas de paginación.",
-                Prioridad = (PrioridadTicket)rand.Next(0, 4),
-                Estado = (EstadoTicket)rand.Next(0, 4),
-                ClienteId = rand.Next(1, 6),
-                AgenteId = rand.Next(0, 2) == 0 ? null : rand.Next(1, 4),
-                Reaperturas = rand.Next(0, 2),
-                FechaCreacion = creado,
-                FechaActualizacion = creado
-            });
+                var creado = ahora.AddDays(-rand.Next(0, 60)).AddHours(-rand.Next(0, 24));
+                _tickets.Add(new Ticket
+                {
+                    Id = ++_ultimoId,
+                    Codigo = $"SP-{yy:D2}-{_ultimoId:D3}",
+                    Titulo = $"{titulos[i % titulos.Length]} #{_ultimoId}",
+                    Description = "Ticket generado automáticamente para pruebas de paginación.",
+                    Prioridad = (PrioridadTicket)rand.Next(0, 4),
+                    Estado = estado,
+                    ClienteId = kvp.Key,
+                    AgenteId = estado == EstadoTicket.Abierto ? null : rand.Next(1, 4),
+                    Reaperturas = 0,
+                    FechaCreacion = creado,
+                    FechaActualizacion = creado
+                });
+                i++;
+            }
         }
     }
 }
